@@ -23,8 +23,8 @@ def setup_data():
 									(0.1307,), (0.3081,))
 								]))
 
-	mnist_subset = torch.utils.data.Subset(mnist_train, list(range(20000)))
-	train_loader = torch.utils.data.DataLoader(mnist_subset,
+	#mnist_subset = torch.utils.data.Subset(mnist_train, list(range(20000)))
+	train_loader = torch.utils.data.DataLoader(mnist_train,
 								batch_size=batch_size_train, shuffle=True)
 
 	test_loader = torch.utils.data.DataLoader(mnist_test,
