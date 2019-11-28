@@ -31,8 +31,9 @@ class NeuralNetwork(nn.Module):
 		self.blocks = blocks
 		self.n_layers = len(self.blocks)
 		self.layers, out_channels = self._make_layers(self.blocks, in_channels)
-		self.fc = nn.Linear(out_channels * 14 * 14, num_outputs)
 		self.avgpool = nn.AvgPool2d(2)
+		self.fc = nn.Linear(out_channels*14*14, num_outputs)
+		
 
 	def _make_layers(self, blocks, in_channels):
 		layers = []
