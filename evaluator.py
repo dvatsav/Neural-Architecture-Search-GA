@@ -36,7 +36,7 @@ def setup_data():
 							]))
 	
 	"""
-	mnist_train = torch.utils.data.Subset(mnist_train, list(range(10000)))
+	#mnist_train = torch.utils.data.Subset(mnist_train, list(range(10000)))
 	train_loader = torch.utils.data.DataLoader(mnist_train,
 								batch_size=batch_size_train, shuffle=True)
 
@@ -77,7 +77,7 @@ def test(model, criterion, test_losses, test_counter):
 			output = model(data)
 			test_loss += criterion(output, target).item()
 			print (output)
-			pred = output.data.max(1, keepdim=True)[1]
+			pred = output.argmax(1, keepdim=True)
 			print (pred)
 			correct += pred.eq(target.data.view_as(pred)).sum()
 	test_loss /= len(test_loader.dataset)
@@ -92,8 +92,7 @@ def count_parameters(model):
 	return sum(p.numel() for p in model.parameters() if p.requires_grad)
 
 def evaluate(model, epochs):
-	optimizer = optim.SGD(model.parameters(), lr=learning_rate,
-											momentum=momentum)
+	optimizer = optim.Adadelta(model.parameters(), lr=learning_rate)
 	criterion = nn.CrossEntropyLoss()
 	criterion = criterion.cuda()
 	

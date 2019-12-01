@@ -21,3 +21,6 @@
 12/01 12:51:30 PM Using device cpu
 12/01 12:52:04 PM Using device cpu
 12/01 01:52:49 PM Using device cpu
+12/01 02:46:00 PM Using device cpu
+12/01 04:24:01 PM Using device cpu
+12/01 04:24:41 PM Using device cpu
