@@ -1,8 +1,5 @@
-import torch
 import torch.nn as nn
 import torch.nn.functional as F
-import torch.optim as optim
-import torchvision
 
 class BasicBlock(nn.Module):
 	def __init__(self, activation, in_channels, out_channels, last=False):
@@ -32,7 +29,8 @@ class NeuralNetwork(nn.Module):
 		self.n_layers = len(self.blocks)
 		self.layers, out_channels = self._make_layers(self.blocks, in_channels)
 		self.avgpool = nn.AvgPool2d(2)
-		self.fc = nn.Linear(out_channels*14*14, num_outputs)
+		self.fc1 = nn.Linear(out_channels*14*14, 1024)
+		self.fc2 = nn.Linear(1024, num_outputs)
 		
 
 	def _make_layers(self, blocks, in_channels):
@@ -49,5 +47,7 @@ class NeuralNetwork(nn.Module):
 			x = self.layers[i](x)
 		x = self.avgpool(x)
 		x = x.view(x.size(0), -1)
-		x = self.fc(x)
+		x = self.fc1(x)
+		x = self.fc2(x)
+		x = F.softmax(x, dim=1)
 		return x

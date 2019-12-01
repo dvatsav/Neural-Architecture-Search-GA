@@ -34,3 +34,4 @@ problem = NeuralArchitectureSearch(n_var=n_var, n_obj=n_obj, lb=lower_bound,
 								epochs=epochs)
 algorithm = NSGA2(pop_size=5, eliminate_duplicates=True, n_offsprings=1)
 result = minimize(problem, algorithm, termination=('n_gen', 5))
+writer.close()

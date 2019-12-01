@@ -1,5 +1,6 @@
-import numpy as np
+import torch
 import torch.nn as nn
+import numpy as np
 
 def get_round_channel(channel):
 	if channel >= 16 and channel < 32:

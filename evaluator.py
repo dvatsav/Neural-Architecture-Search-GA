@@ -1,8 +1,8 @@
-from env import *
 import torchvision
+import torch
 import torch.optim as optim
 import torch.nn as nn
-import matplotlib.pyplot as plt
+from env import *
 
 batch_size_train = 32
 batch_size_test = 32
@@ -22,7 +22,7 @@ def setup_data():
 									torchvision.transforms.Normalize(
 									(0.1307,), (0.3081,))
 								]))
-
+	"""
 	cifar_train = torchvision.datasets.CIFAR10('files/', train=True, download=True, transform=torchvision.transforms.Compose([
 								torchvision.transforms.ToTensor(),
 								torchvision.transforms.Normalize(
@@ -34,8 +34,9 @@ def setup_data():
 								torchvision.transforms.Normalize(
 								(0.1307,), (0.3081,))
 							]))
-
-	#mnist_subset = torch.utils.data.Subset(mnist_train, list(range(20000)))
+	
+	"""
+	mnist_train = torch.utils.data.Subset(mnist_train, list(range(20000)))
 	train_loader = torch.utils.data.DataLoader(mnist_train,
 								batch_size=batch_size_train, shuffle=True)
 
@@ -98,6 +99,10 @@ def evaluate(model, epochs):
 	train_counter = []
 	test_losses = []
 	test_counter = []
+
+	dataiter = iter(train_loader)
+	images, labels = dataiter.next()
+	writer.add_graph(model, images)
 
 	for i in range(epochs):
 		train(model, i+1, optimizer, criterion, train_losses, train_counter)

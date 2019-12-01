@@ -1,9 +1,9 @@
-import numpy as np
 from pymop.problem import Problem
-
+import numpy as np
+from utils import decode_genome
 from network import NeuralNetwork
-from utils import *
-from evaluator import *
+from env import *
+from evaluator import evaluate
 
 class NeuralArchitectureSearch(Problem):
 	def __init__(self, n_var=21, n_obj=1, n_constr=0, lb=None, ub=None, 
@@ -18,12 +18,14 @@ class NeuralArchitectureSearch(Problem):
 		self.n_vars_block = 1 + 1 + 2 * max_convs_per_block
 		self.epochs = epochs
 		self.n_obj = n_obj
+		self.model_count = 0
 
 	def _evaluate(self, x, out, *args, **kwargs):
 		num_genomes = x.shape[0]
 		objectives = np.full((num_genomes, self.n_obj), np.nan)
 		x = (np.around(x)).astype(int)
 		for i in range(num_genomes):
+			self.model_count += 1
 			blocks = decode_genome(x[i], self.n_var, self.max_convs_per_block, self.n_vars_block)
 			print (blocks)
 			performance = {
@@ -32,8 +34,9 @@ class NeuralArchitectureSearch(Problem):
 			}
 			if len(blocks) > 0:
 				model = NeuralNetwork(blocks=blocks, in_channels=1, num_outputs=10)
-				model = model.to(device)
 				print (model)
+				model = model.to(device)
+				
 				performance = evaluate(model, epochs=self.epochs)
 				print (performance)
 			objectives[i, 0] = 100 - performance['test accuracy']
