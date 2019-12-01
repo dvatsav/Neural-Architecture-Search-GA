@@ -37,8 +37,12 @@ problem = NeuralArchitectureSearch(n_var=n_var, n_obj=n_obj, lb=lower_bound,
 								epochs=epochs)
 algorithm = NSGA2(pop_size=5, eliminate_duplicates=True, n_offsprings=1)
 result = minimize(problem, algorithm, termination=('n_gen', 5))
-logging.info("Best Genome: %s"%(str(result.X)))
+logging.info("Best Genome _ %s"%(str(result.X)))
 performances = problem.model_performances
-best_performance_model = sorted(performances.items(), key=lambda kv:kv[1]['test_accuracy'], reverse=true)[0]
+best_performance_model = sorted(performances.items(), key=lambda kv:kv[1]['test_accuracy'], reverse=True)[0]
 print (best_performance_model)
+best_model = 0
+for model in best_performance_model:
+	best_model = model
+writer.add_graph(best_model, torch.randn(32, in_channels=1, 28, 28))
 writer.close()

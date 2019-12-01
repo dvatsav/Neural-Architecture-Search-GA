@@ -37,8 +37,7 @@ class NeuralArchitectureSearch(Problem):
 				model = NeuralNetwork(blocks=blocks, in_channels=1, num_outputs=10)
 				print (model)
 				model = model.to(device)
-				
-				performance = evaluate(model, epochs=self.epochs, model_name="Model: %d"%self.model_count)
+				performance = evaluate(model, epochs=self.epochs, model_name="Model %d"%self.model_count)
 				self.model_performances[model] = performance
 				print (performance)
 			objectives[i, 0] = 100 - performance['test accuracy']

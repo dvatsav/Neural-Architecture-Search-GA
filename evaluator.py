@@ -98,15 +98,10 @@ def evaluate(model, epochs, model_name):
 	test_losses = []
 	test_counter = []
 
-	dataiter = iter(train_loader)
-	images, labels = dataiter.next()
-	writer.add_graph(model.to(device), images.to(device))
-
-
 	for i in range(epochs):
 		train_losses = train(model, i+1, optimizer, criterion, train_losses, train_counter)
 		for j in range(len(train_losses)):
-			writer.add_scalar('loss/%s'%model_name, train_losses[i], j)
+			writer.add_scalar('loss/%s'%model_name, train_losses[j], j)
 	accuracy = test(model, criterion, test_losses, test_counter)
 	parameters = count_parameters(model)
 	
