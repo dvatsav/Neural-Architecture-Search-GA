@@ -36,7 +36,7 @@ def setup_data():
 							]))
 	
 	"""
-	mnist_train = torch.utils.data.Subset(mnist_train, list(range(20000)))
+	mnist_train = torch.utils.data.Subset(mnist_train, list(range(10000)))
 	train_loader = torch.utils.data.DataLoader(mnist_train,
 								batch_size=batch_size_train, shuffle=True)
 
