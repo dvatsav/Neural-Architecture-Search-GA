@@ -37,7 +37,7 @@ if args.dataset == "cifar":
 
 n_obj = 2
 max_blocks = args.max_blocks
-max_convs_per_block = args.max_convs_per_block
+max_convs_per_block = args.max_conv
 activations = ['sigmoid', 'ReLU']
 epochs = args.epochs
 n_gen = 50
