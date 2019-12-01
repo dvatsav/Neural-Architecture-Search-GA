@@ -13,12 +13,12 @@ from env import *
 import argparse
 
 parser = argparse.ArgumentParser(description='Neural Architecture Search')
-parser.add_argument("-m", "--max_blocks", help="max basic blocks", action="store_true", default=3)
-parser.add_argument("-c", "--max_conv", help="max conv layers per block", action="store_true", default=2)
+parser.add_argument("-m", "--max_blocks", help="max basic blocks", default=3)
+parser.add_argument("-c", "--max_conv", help="max conv layers per block", default=2)
 parser.add_argument("-e", "--epochs", help="epochs", action="store_true", default=1)
-parser.add_argument("-p", "--pop_size", help="population size", action="store_true", default=5)
-parser.add_argument("-o", "--n_offsprings", help="population size", action="store_true", default=1)
-parser.add_argument("-d", "--dataset", help="dataset mnist/cifar", action="store_true", default="mnist")
+parser.add_argument("-p", "--pop_size", help="population size", default=5)
+parser.add_argument("-o", "--n_offsprings", help="population size", default=1)
+parser.add_argument("-d", "--dataset", help="dataset mnist/cifar", default="mnist")
 
 
 args = parser.parse_args()
