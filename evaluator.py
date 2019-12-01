@@ -76,7 +76,9 @@ def test(model, criterion, test_losses, test_counter):
 			target = target.to(device)
 			output = model(data)
 			test_loss += criterion(output, target).item()
+			print (output)
 			pred = output.data.max(1, keepdim=True)[1]
+			print (pred)
 			correct += pred.eq(target.data.view_as(pred)).sum()
 	test_loss /= len(test_loader.dataset)
 	test_losses.append(test_loss)

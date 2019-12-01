@@ -19,13 +19,13 @@ class NeuralArchitectureSearch(Problem):
 		self.epochs = epochs
 		self.n_obj = n_obj
 		self.model_count = 0
+		self.model_performances = {}
 
 	def _evaluate(self, x, out, *args, **kwargs):
 		num_genomes = x.shape[0]
 		objectives = np.full((num_genomes, self.n_obj), np.nan)
 		x = (np.around(x)).astype(int)
 		for i in range(num_genomes):
-			self.model_count += 1
 			blocks = decode_genome(x[i], self.n_var, self.max_convs_per_block, self.n_vars_block)
 			print (blocks)
 			performance = {
@@ -38,6 +38,7 @@ class NeuralArchitectureSearch(Problem):
 				model = model.to(device)
 				
 				performance = evaluate(model, epochs=self.epochs)
+				self.model_performances[model] = performance
 				print (performance)
 			objectives[i, 0] = 100 - performance['test accuracy']
 			objectives[i, 1] = performance['num parameters']
