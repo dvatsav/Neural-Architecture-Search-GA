@@ -99,7 +99,7 @@ def count_parameters(model):
 
 train_loader_mnist, test_loader_mnist, train_loader_cifar, test_loader_cifar = setup_data()
 
-def evaluate(model, epochs, model_name, args):
+def evaluate(args, model, epochs, model_name):
 	optimizer = optim.Adadelta(model.parameters(), lr=learning_rate)
 	criterion = nn.CrossEntropyLoss()
 	criterion = criterion.cuda()
