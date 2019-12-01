@@ -27,11 +27,11 @@ class BasicBlock(nn.Module):
 		return x
 
 class NeuralNetwork(nn.Module):
-	def __init__(self, blocks, in_channels, num_outputs):
+	def __init__(self, blocks, in_channels, num_outputs, inp_size=28):
 		super(NeuralNetwork, self).__init__()
 		self.blocks = blocks
 		self.n_layers = len(self.blocks)
-		self.layers, out_channels, out_size = self._make_layers(self.blocks, in_channels)
+		self.layers, out_channels, out_size = self._make_layers(self.blocks, in_channels, inp_size=inp_size)
 		self.dropout = nn.Dropout2d(0.5, inplace=True)
 		self.maxpool = nn.MaxPool2d(2)
 		if out_size % 2 != 0:
