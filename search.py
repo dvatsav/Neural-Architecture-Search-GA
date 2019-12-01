@@ -50,10 +50,10 @@ for i in range(0, n_var-1, n_vars_block):
 		lower_bound[j] = 1
 		upper_bound[j] = 7
 
-problem = NeuralArchitectureSearch(n_var=n_var, n_obj=n_obj, lb=lower_bound,
+problem = NeuralArchitectureSearch(args, n_var=n_var, n_obj=n_obj, lb=lower_bound,
 								ub=upper_bound, max_blocks=max_blocks, 
 								max_convs_per_block=max_convs_per_block,
-								epochs=epochs, args=args)
+								epochs=epochs)
 algorithm = NSGA2(pop_size=args.pop_size, eliminate_duplicates=True, n_offsprings=args.n_offsprings)
 result = minimize(problem, algorithm, termination=('n_gen', 5))
 logging.info("Best_Genome_%s"%(str(result.X)))

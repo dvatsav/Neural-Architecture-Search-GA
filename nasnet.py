@@ -6,8 +6,8 @@ from env import *
 from evaluator import evaluate
 
 class NeuralArchitectureSearch(Problem):
-	def __init__(self, n_var=21, n_obj=1, n_constr=0, lb=None, ub=None, 
-					max_blocks=11, max_convs_per_block=2, epochs=30, args):
+	def __init__(self, args, n_var=21, n_obj=1, n_constr=0, lb=None, ub=None, 
+					max_blocks=11, max_convs_per_block=2, epochs=30):
 		self.lb = lb
 		self.ub = ub
 		super().__init__(n_var=n_var, n_obj=n_obj, n_constr=n_constr, 
