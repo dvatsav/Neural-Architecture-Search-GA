@@ -37,7 +37,10 @@ class NeuralArchitectureSearch(Problem):
 				'num parameters': np.inf
 			}
 			if len(blocks) > 0:
-				model = NeuralNetwork(blocks=blocks, in_channels=1, num_outputs=10)
+				in_channels = 1
+				if self.args.dataset == "cifar":
+					in_channels = 3
+				model = NeuralNetwork(blocks=blocks, in_channels=in_channels, num_outputs=10)
 				print (model)
 				model = model.to(device)
 				performance = evaluate(self.args, model, epochs=self.epochs, model_name="Model_%d"%self.model_count)

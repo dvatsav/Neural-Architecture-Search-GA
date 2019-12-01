@@ -44,10 +44,10 @@ def setup_data():
 	test_loader_mnist = torch.utils.data.DataLoader(mnist_test,
 								batch_size=batch_size_test, shuffle=True)
 
-	train_loader_cifar = torch.utils.data.DataLoader(mnist_train,
+	train_loader_cifar = torch.utils.data.DataLoader(cifar_train,
 								batch_size=batch_size_train, shuffle=True)
 
-	test_loader_cifar = torch.utils.data.DataLoader(mnist_test,
+	test_loader_cifar = torch.utils.data.DataLoader(cifar_test,
 								batch_size=batch_size_test, shuffle=True)
 
 	return train_loader_mnist, test_loader_mnist, train_loader_cifar, test_loader_cifar
