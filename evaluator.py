@@ -102,7 +102,7 @@ def evaluate(model, epochs):
 
 	dataiter = iter(train_loader)
 	images, labels = dataiter.next()
-	writer.add_graph(model, images)
+	writer.add_graph(model.to(device), images.to(device))
 
 	for i in range(epochs):
 		train(model, i+1, optimizer, criterion, train_losses, train_counter)
