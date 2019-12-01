@@ -44,5 +44,5 @@ print (best_performance_model)
 best_model = 0
 for model in best_performance_model:
 	best_model = model
-writer.add_graph(best_model, torch.randn(32, in_channels=1, 28, 28))
+writer.add_graph(best_model, torch.randn(32, 1, 28, 28))
 writer.close()
