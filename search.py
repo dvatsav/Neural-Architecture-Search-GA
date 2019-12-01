@@ -36,10 +36,10 @@ if args.dataset == "cifar":
 
 
 n_obj = 2
-max_blocks = args.max_blocks
-max_convs_per_block = args.max_conv
+max_blocks = int(args.max_blocks)
+max_convs_per_block = int(args.max_conv)
 activations = ['sigmoid', 'ReLU']
-epochs = args.epochs
+epochs = int(args.epochs)
 n_gen = 50
 n_vars_block = 1 + 1 + 2 * max_convs_per_block
 n_var = int(max_blocks * (n_vars_block)) 
@@ -54,7 +54,7 @@ problem = NeuralArchitectureSearch(args, n_var=n_var, n_obj=n_obj, lb=lower_boun
 								ub=upper_bound, max_blocks=max_blocks, 
 								max_convs_per_block=max_convs_per_block,
 								epochs=epochs)
-algorithm = NSGA2(pop_size=args.pop_size, eliminate_duplicates=True, n_offsprings=args.n_offsprings)
+algorithm = NSGA2(pop_size=int(args.pop_size), eliminate_duplicates=True, n_offsprings=int(args.n_offsprings))
 result = minimize(problem, algorithm, termination=('n_gen', 5))
 logging.info("Best_Genome_%s"%(str(result.X)))
 best_model = problem.best_model
