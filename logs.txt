@@ -24,3 +24,8 @@
 12/01 02:46:00 PM Using device cpu
 12/01 04:24:01 PM Using device cpu
 12/01 04:24:41 PM Using device cpu
+12/01 05:01:04 PM Using device cpu
+12/01 05:01:05 PM Failed to import cuda module: No module named 'caffe2.python.caffe2_pybind11_state_gpu'
+12/01 05:01:05 PM Failed to import AMD hip module: No module named 'caffe2.python.caffe2_pybind11_state_hip'
+12/01 05:01:05 PM This caffe2 python run does not have GPU support. Will run in CPU only mode.
+12/01 05:01:57 PM Using device cpu

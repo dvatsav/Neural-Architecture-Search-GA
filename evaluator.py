@@ -36,7 +36,7 @@ def setup_data():
 							]))
 	
 	"""
-	#mnist_train = torch.utils.data.Subset(mnist_train, list(range(10000)))
+	mnist_train = torch.utils.data.Subset(mnist_train, list(range(10000)))
 	train_loader = torch.utils.data.DataLoader(mnist_train,
 								batch_size=batch_size_train, shuffle=True)
 
@@ -63,8 +63,7 @@ def train(model, epoch, optimizer, criterion, train_losses, train_counter):
 			train_losses.append(loss.item())
 			train_counter.append(
 				(batch_idx*64) + ((epoch-1)*len(train_loader.dataset)))
-			#torch.save(model.state_dict(), 'results/model.pth')
-			#torch.save(optimizer.state_dict(), 'results/optimizer.pth')
+	return train_losses
 
 def test(model, criterion, test_losses, test_counter):
 	model.eval()
@@ -76,9 +75,7 @@ def test(model, criterion, test_losses, test_counter):
 			target = target.to(device)
 			output = model(data)
 			test_loss += criterion(output, target).item()
-			print (output)
 			pred = output.argmax(1, keepdim=True)
-			print (pred)
 			correct += pred.eq(target.data.view_as(pred)).sum()
 	test_loss /= len(test_loader.dataset)
 	test_losses.append(test_loss)
@@ -91,7 +88,7 @@ def test(model, criterion, test_losses, test_counter):
 def count_parameters(model):
 	return sum(p.numel() for p in model.parameters() if p.requires_grad)
 
-def evaluate(model, epochs):
+def evaluate(model, epochs, model_name):
 	optimizer = optim.Adadelta(model.parameters(), lr=learning_rate)
 	criterion = nn.CrossEntropyLoss()
 	criterion = criterion.cuda()
@@ -105,13 +102,21 @@ def evaluate(model, epochs):
 	images, labels = dataiter.next()
 	writer.add_graph(model.to(device), images.to(device))
 
+
 	for i in range(epochs):
-		train(model, i+1, optimizer, criterion, train_losses, train_counter)
+		train_losses = train(model, i+1, optimizer, criterion, train_losses, train_counter)
+		for j in range(len(train_losses)):
+			writer.add_scalar('loss/%s'%model_name, train_losses[i], j)
 	accuracy = test(model, criterion, test_losses, test_counter)
 	parameters = count_parameters(model)
-	return {
+	
+	performance = {
 			'test accuracy': accuracy.item(),
 			'num parameters': parameters
 	}
+
+
+	logging.info("%s\n%s\n\n%s\n"%(model_name, str(model), str(performance)))
+	return performance
 
 train_loader, test_loader = setup_data()
