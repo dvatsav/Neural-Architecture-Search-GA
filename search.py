@@ -10,17 +10,36 @@ from nasnet import NeuralArchitectureSearch
 from utils import *
 from env import *
 
+import argparse
+
+parser = argparse.ArgumentParser(description='Neural Architecture Search')
+parser.add_argument("-m", "--max_blocks", help="max basic blocks", action="store_true", type=int, default=3)
+parser.add_argument("-c", "--max_conv", help="max conv layers per block", action="store_true", type=int, default=2)
+parser.add_argument("-e", "--epochs", help="epochs", action="store_true", type=int, default=1)
+parser.add_argument("-p", "--pop_size", help="population size", action="store_true", type=int, default=5)
+parser.add_argument("-o", "--n_offsprings", help="population size", action="store_true", type=int, default=1)
+parser.add_argument("-d", "--dataset", help="dataset mnist/cifar", action="store_true", type=str, default="mnist")
+
+
+args = parser.parse_args()
 
 np.random.seed(42)
 
 random_seed = 2
 torch.manual_seed(random_seed)
 
+inp_size = 28
+inp_channels = 1
+if args.dataset == "cifar":
+	inp_size = 32
+	inp_channels = 3
+
+
 n_obj = 2
-max_blocks = 3
-max_convs_per_block = 2
+max_blocks = args.max_blocks
+max_convs_per_block = args.max_convs_per_block
 activations = ['sigmoid', 'ReLU']
-epochs = 1
+epochs = args.epochs
 n_gen = 50
 n_vars_block = 1 + 1 + 2 * max_convs_per_block
 n_var = int(max_blocks * (n_vars_block)) 
@@ -34,15 +53,10 @@ for i in range(0, n_var-1, n_vars_block):
 problem = NeuralArchitectureSearch(n_var=n_var, n_obj=n_obj, lb=lower_bound,
 								ub=upper_bound, max_blocks=max_blocks, 
 								max_convs_per_block=max_convs_per_block,
-								epochs=epochs)
-algorithm = NSGA2(pop_size=5, eliminate_duplicates=True, n_offsprings=1)
+								epochs=epochs, args=args)
+algorithm = NSGA2(pop_size=args.pop_size, eliminate_duplicates=True, n_offsprings=args.n_offsprings)
 result = minimize(problem, algorithm, termination=('n_gen', 5))
-logging.info("Best Genome _ %s"%(str(result.X)))
-performances = problem.model_performances
-best_performance_model = sorted(performances.items(), key=lambda kv:kv[1]['test accuracy'], reverse=True)[0]
-print (best_performance_model)
-best_model = 0
-for model in best_performance_model:
-	best_model = model
-writer.add_graph(best_model, torch.randn(32, 1, 28, 28))
+logging.info("Best_Genome_%s"%(str(result.X)))
+best_model = problem.best_model
+writer.add_graph(best_model.to(device), torch.randn(32, inp_channels, inp_size, inp_size).cuda())
 writer.close()

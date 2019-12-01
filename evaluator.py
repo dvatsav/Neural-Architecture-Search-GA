@@ -22,7 +22,7 @@ def setup_data():
 									torchvision.transforms.Normalize(
 									(0.1307,), (0.3081,))
 								]))
-	"""
+	
 	cifar_train = torchvision.datasets.CIFAR10('files/', train=True, download=True, transform=torchvision.transforms.Compose([
 								torchvision.transforms.ToTensor(),
 								torchvision.transforms.Normalize(
@@ -35,17 +35,24 @@ def setup_data():
 								(0.1307,), (0.3081,))
 							]))
 	
-	"""
+	cifar_train = torch.utils.data.Subset(cifar_train, list(range(10000)))
 	mnist_train = torch.utils.data.Subset(mnist_train, list(range(10000)))
-	train_loader = torch.utils.data.DataLoader(mnist_train,
+	
+	train_loader_mnist = torch.utils.data.DataLoader(mnist_train,
 								batch_size=batch_size_train, shuffle=True)
 
-	test_loader = torch.utils.data.DataLoader(mnist_test,
+	test_loader_mnist = torch.utils.data.DataLoader(mnist_test,
 								batch_size=batch_size_test, shuffle=True)
 
-	return train_loader, test_loader
+	train_loader_cifar = torch.utils.data.DataLoader(mnist_train,
+								batch_size=batch_size_train, shuffle=True)
 
-def train(model, epoch, optimizer, criterion, train_losses, train_counter):
+	test_loader_cifar = torch.utils.data.DataLoader(mnist_test,
+								batch_size=batch_size_test, shuffle=True)
+
+	return train_loader_mnist, test_loader_mnist, train_loader_cifar, test_loader_cifar
+
+def train(model, epoch, optimizer, criterion, train_losses, train_counter, train_loader):
 	model.train()
 
 	for batch_idx, (data, target) in enumerate(train_loader):
@@ -65,7 +72,7 @@ def train(model, epoch, optimizer, criterion, train_losses, train_counter):
 				(batch_idx*64) + ((epoch-1)*len(train_loader.dataset)))
 	return train_losses
 
-def test(model, criterion, test_losses, test_counter):
+def test(model, criterion, test_losses, test_counter, test_loader):
 	model.eval()
 	test_loss = 0
 	correct = 0
@@ -88,7 +95,11 @@ def test(model, criterion, test_losses, test_counter):
 def count_parameters(model):
 	return sum(p.numel() for p in model.parameters() if p.requires_grad)
 
-def evaluate(model, epochs, model_name):
+
+
+train_loader_mnist, test_loader_mnist, train_loader_cifar, test_loader_cifar = setup_data()
+
+def evaluate(model, epochs, model_name, args):
 	optimizer = optim.Adadelta(model.parameters(), lr=learning_rate)
 	criterion = nn.CrossEntropyLoss()
 	criterion = criterion.cuda()
@@ -98,11 +109,20 @@ def evaluate(model, epochs, model_name):
 	test_losses = []
 	test_counter = []
 
+	train_loader = None
+	test_loader = None
+	if args.dataset == "mnist":
+		train_loader = train_loader_mnist
+		test_loader = test_loader_mnist
+	else:
+		train_loader = train_loader_cifar
+		test_loader = test_loader_cifar
+
 	for i in range(epochs):
-		train_losses = train(model, i+1, optimizer, criterion, train_losses, train_counter)
+		train_losses = train(model, i+1, optimizer, criterion, train_losses, train_counter, train_loader)
 		for j in range(len(train_losses)):
 			writer.add_scalar('loss/%s'%model_name, train_losses[j], j)
-	accuracy = test(model, criterion, test_losses, test_counter)
+	accuracy = test(model, criterion, test_losses, test_counter, test_loader)
 	parameters = count_parameters(model)
 	
 	performance = {
@@ -114,4 +134,3 @@ def evaluate(model, epochs, model_name):
 	logging.info("%s\n%s\n\n%s\n"%(model_name, str(model), str(performance)))
 	return performance
 
-train_loader, test_loader = setup_data()

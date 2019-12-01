@@ -7,7 +7,7 @@ from evaluator import evaluate
 
 class NeuralArchitectureSearch(Problem):
 	def __init__(self, n_var=21, n_obj=1, n_constr=0, lb=None, ub=None, 
-					max_blocks=11, max_convs_per_block=2, epochs=30):
+					max_blocks=11, max_convs_per_block=2, epochs=30, args):
 		self.lb = lb
 		self.ub = ub
 		super().__init__(n_var=n_var, n_obj=n_obj, n_constr=n_constr, 
@@ -20,6 +20,9 @@ class NeuralArchitectureSearch(Problem):
 		self.n_obj = n_obj
 		self.model_count = 0
 		self.model_performances = {}
+		self.best_model = 0
+		self.best_performance = -np.inf
+		self.args = args
 
 	def _evaluate(self, x, out, *args, **kwargs):
 		num_genomes = x.shape[0]
@@ -37,9 +40,12 @@ class NeuralArchitectureSearch(Problem):
 				model = NeuralNetwork(blocks=blocks, in_channels=1, num_outputs=10)
 				print (model)
 				model = model.to(device)
-				performance = evaluate(model, epochs=self.epochs, model_name="Model %d"%self.model_count)
+				performance = evaluate(model, epochs=self.epochs, model_name="Model_%d"%self.model_count, self.args)
 				self.model_performances[model] = performance
 				print (performance)
+				if performance['test accuracy'] > self.best_performance:
+					self.best_performance = performance['test accuracy']
+					self.best_model = model
 			objectives[i, 0] = 100 - performance['test accuracy']
 			objectives[i, 1] = performance['num parameters']
 
